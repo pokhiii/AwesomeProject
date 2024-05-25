@@ -18,6 +18,7 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {generateListItemData} from './dataGenerators/items';
+import Section from './components/Section';
 
 type ItemProps = {
   title: string;
@@ -44,12 +45,8 @@ function App(): React.JSX.Element {
 
   const [selectedItem, setSelectedItem] = React.useState(null);
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
+  const FlatListWrapper = () => {
+    return (
       <FlatList
         data={DATA}
         renderItem={({item, index}) => (
@@ -63,6 +60,35 @@ function App(): React.JSX.Element {
         horizontal
         inverted
       />
+    );
+  };
+
+  return (
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={backgroundStyle.backgroundColor}
+      />
+
+      <Section title="FlatList rendered via wrapper">
+        <FlatListWrapper />
+      </Section>
+
+      <Section title="FlatList directly rendered">
+        <FlatList
+          data={DATA}
+          renderItem={({item, index}) => (
+            <Item
+              title={item.title}
+              isSelected={selectedItem === index}
+              onPress={() => setSelectedItem(index)}
+            />
+          )}
+          keyExtractor={item => item.id}
+          horizontal
+          inverted
+        />
+      </Section>
     </SafeAreaView>
   );
 }
