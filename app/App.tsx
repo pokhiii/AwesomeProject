@@ -36,6 +36,22 @@ const Item = ({title, isSelected, onPress}: ItemProps) => (
 
 const DATA = generateListItemData(20);
 
+const FlatListWrapper = ({data, selectedItem, onSelectItem}) => (
+  <FlatList
+    data={data}
+    renderItem={({item, index}) => (
+      <Item
+        title={item.title}
+        isSelected={selectedItem === index}
+        onPress={() => onSelectItem(index)}
+      />
+    )}
+    keyExtractor={item => item.id}
+    horizontal
+    inverted
+  />
+);
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -43,25 +59,7 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const [selectedItem, setSelectedItem] = React.useState(null);
-
-  const FlatListWrapper = () => {
-    return (
-      <FlatList
-        data={DATA}
-        renderItem={({item, index}) => (
-          <Item
-            title={item.title}
-            isSelected={selectedItem === index}
-            onPress={() => setSelectedItem(index)}
-          />
-        )}
-        keyExtractor={item => item.id}
-        horizontal
-        inverted
-      />
-    );
-  };
+  const [selectedFLItem, setSelectedFLItem] = React.useState(null);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -70,8 +68,12 @@ function App(): React.JSX.Element {
         backgroundColor={backgroundStyle.backgroundColor}
       />
 
-      <Section title="FlatList rendered via wrapper">
-        <FlatListWrapper />
+      <Section title="Create an instance of the FlatListWrapper component">
+        <FlatListWrapper
+          data={DATA}
+          selectedItem={selectedFLItem}
+          onSelectItem={setSelectedFLItem}
+        />
       </Section>
 
       <Section title="FlatList directly rendered">
@@ -80,8 +82,8 @@ function App(): React.JSX.Element {
           renderItem={({item, index}) => (
             <Item
               title={item.title}
-              isSelected={selectedItem === index}
-              onPress={() => setSelectedItem(index)}
+              isSelected={selectedFLItem === index}
+              onPress={() => setSelectedFLItem(index)}
             />
           )}
           keyExtractor={item => item.id}
